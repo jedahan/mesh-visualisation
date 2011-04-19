@@ -14,9 +14,8 @@ html, body {
   padding: 0;
 }
 
-svg {
-  background-color: #eee;
-  pointer-events: all;
+rect {
+  fill: #fff;
 }
 
 .node {
@@ -45,6 +44,10 @@ var w = 960,
     links = [];
 
 var vis = d3.select("body").append("svg:svg")
+    .attr("width", w)
+    .attr("height", h);
+
+vis.append("svg:rect")
     .attr("width", w)
     .attr("height", h);
 
