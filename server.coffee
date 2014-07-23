@@ -15,10 +15,16 @@ addRandomNode = (socket) ->
     socket.emit 'addnode', JSON.stringify({id: randomId})
 
 io.sockets.on 'connection', (socket) ->
+  socket.on 'addnode', (data) ->
+    console.log data
+  socket.on 'addlink', (data) ->
+    console.log "INK"
+    console.log data
+
   connectedSockets.push socket
   # we want to read a twitter stream later
   for socket in connectedSockets
-    setInterval addRandomNode(socket), 1000
+    setInterval addRandomNode(socket), 5000
 
 # cors proxy and body parser
 server.use restify.bodyParser()
