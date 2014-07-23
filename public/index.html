@@ -101,9 +101,8 @@ function addnode(id){
   }
 
   console.log("adding node "+id);
-  var node = {x: 200, y: 50, id: id};
-  nodes.push(node);
-  socket.send(node);
+  nodes.push({x: 200, y: 50, id: id});
+  socket.send({id: id});
   restart();
   return node;
 }
@@ -132,9 +131,8 @@ function addlink(source_id, target_id){
     return;
   }
   console.log("adding link "+source_id+" => "+target_id);
-  var link = {source: source, target: target};
-  links.push(link)
-  socket.send(link)
+  links.push({source: source, target: target});
+  socket.send({source: source.id, target: target.id});
   restart();
 }
 
