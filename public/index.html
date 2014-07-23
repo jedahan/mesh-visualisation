@@ -48,12 +48,14 @@ socket.on('disconnect', function() {
   $('body').removeClass('connected')
 })
 
-socket.on('addnode', function(data){
-  addnode(data)
+socket.on('addnode', function(json){
+  var message = JSON.parse(json)
+  addnode(message.id)
 })
 
-socket.on('addlink', function(data){
-  addlink(data.source, data.target)
+socket.on('addlink', function(json){
+  var message = JSON.parse(json)
+  addlink(message.source, message.target)
 })
 
 var width = 960,
