@@ -12,7 +12,7 @@ connectedSockets = []
 addRandomNode = (socket) ->
   ->
     randomId = crypto.randomBytes(Math.ceil(16/2)).toString('hex').slice(0,16)
-    socket.emit 'addnode', randomId
+    socket.emit 'addnode', JSON.stringify {id: randomId}
 
 io.sockets.on 'connection', (socket) ->
   connectedSockets.push socket
