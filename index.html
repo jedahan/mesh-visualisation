@@ -18,14 +18,22 @@ rect {
 }
 
 .link {
-  stroke: #999;
+  stroke: #666;
+  stroke-width: 1.5px;
 }
 
 </style>
 <body>
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src=http://d3js.org/d3.v3.js charset=utf-8></script>
 <script>
+/*
+var ws = new WebSocket('ws://localhost:8080/');
 
+ws.onmessage = function(event) {
+  data = event.data;
+  console.log(data);
+};
+*/
 var width = 960,
     height = 500;
 
@@ -59,6 +67,49 @@ var cursor = svg.append("circle")
     .attr("class", "cursor");
 
 restart();
+
+function addnode(id){
+  for(var i=0; i<nodes.length; i++){
+    if(nodes[i].id===id){
+      console.log("node "+id+" already exists, not adding");
+      return;
+    }
+  }
+
+  console.log("adding node "+id);
+  var node = {x: 200, y: 50, id: id};
+  nodes.push(node);
+  restart();
+  return node;
+}
+
+function findnode(id){
+  return nodes.filter(function(node){
+    return node.id===id;
+  })
+}
+
+function findlink(source_id, target_id){
+  return links.filter(function(link){
+    return (link.source.id===source_id && link.target.id===target_id) ||
+            (link.source.id===target_id && link.target.id===source_id);
+  })
+}
+
+function addlink(source_id, target_id){
+  // find or create nodes
+  var source = findnode(source_id)[0] || addnode(source_id);
+  var target = findnode(target_id)[0] || addnode(target_id);
+
+  // find or create source and target node
+  if(findlink(source_id,target_id).length){
+    console.log("link "+source_id+" => "+target_id+" already exists, not adding");
+    return;
+  }
+  console.log("adding link "+source_id+" => "+target_id);
+  links.push({source: source, target: target})
+  restart();
+}
 
 function mousemove() {
   cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
