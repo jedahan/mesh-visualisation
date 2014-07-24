@@ -29,7 +29,7 @@
 
   var force = d3.layout.force()
       .size([width, height])
-      .nodes([{}])
+      .nodes([]) // initialize with no nodes
       .linkDistance(30)
       .charge(-60)
       .on("tick", tick);
@@ -103,7 +103,7 @@
   }
 
   function mousedown() {
-    var point = d3.mouse(this),
+    /*var point = d3.mouse(this),
         node = {x: point[0], y: point[1]},
         n = nodes.push(node);
 
@@ -118,7 +118,10 @@
       }
     });
 
-    restart();
+    restart();*/
+
+    console.log("addnode")
+    socket.emit("addnode", "yo")
   }
 
   function tick() {
