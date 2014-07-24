@@ -106,7 +106,7 @@
   }
 
   function mousedown() {
-    var point = d3.mouse(this),
+    /*var point = d3.mouse(this),
         node = {x: point[0], y: point[1]},
         n = nodes.push(node);
 
@@ -119,7 +119,10 @@
       }
     });
 
-    restart();
+    restart();*/
+
+    console.log("addnode")
+    socket.emit("addnode", "yo")
   }
 
   function tick() {
