@@ -2,6 +2,7 @@
 restify = require 'restify'
 server = restify.createServer()
 
+# for random ids
 crypto = require 'crypto'
 
 # socket.io
@@ -18,11 +19,9 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'addnode', (data) ->
     console.log data
   socket.on 'addlink', (data) ->
-    console.log "INK"
     console.log data
 
   connectedSockets.push socket
-  # we want to read a twitter stream later
   for socket in connectedSockets
     setInterval addRandomNode(socket), 5000
 
@@ -30,7 +29,6 @@ io.sockets.on 'connection', (socket) ->
 server.use restify.bodyParser()
 server.use restify.fullResponse() # set CORS, eTag, other common headers
 
-# attract screen
 server.get /\/*$/, restify.serveStatic directory: './public', default: 'index.html'
 
 server.listen (process.env.PORT or 8080), ->

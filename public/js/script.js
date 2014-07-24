@@ -13,7 +13,6 @@
   })
 
   socket.on('addnode', function(json){
-    console.log("node"+json)
     var message = JSON.parse(json)
     addnode(message.id)
   })
@@ -30,7 +29,7 @@
 
   var force = d3.layout.force()
       .size([width, height])
-      .nodes([{}]) // initialize with a single node
+      .nodes([{}])
       .linkDistance(30)
       .charge(-60)
       .on("tick", tick);
