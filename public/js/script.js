@@ -13,7 +13,6 @@
   })
 
   socket.on('addnode', function(json){
-    console.log("node"+json)
     var message = JSON.parse(json)
     addnode(message.id)
   })
@@ -67,7 +66,6 @@
 
     console.log("adding node "+id);
     nodes.push({x: 200, y: 50, id: id});
-    socket.send({id: id});
     restart();
     return node;
   }
@@ -97,7 +95,6 @@
     }
     console.log("adding link "+source_id+" => "+target_id);
     links.push({source: source, target: target});
-    socket.send({source: source.id, target: target.id});
     restart();
   }
 
@@ -110,12 +107,14 @@
         node = {x: point[0], y: point[1]},
         n = nodes.push(node);
 
+    socket.emit('addnode', node);
     // add links to any nearby nodes
     nodes.forEach(function(target) {
       var x = target.x - node.x,
           y = target.y - node.y;
       if (Math.sqrt(x * x + y * y) < 30) {
         links.push({source: node, target: target});
+        socket.emit('addlink', {source: node, target: target});
       }
     });
 
