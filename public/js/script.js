@@ -4,6 +4,57 @@
 
   socket = io.connect();
 
+  var newnodeButton = $('button#newnode')
+  var linkButton = $('button#link')
+  var messageButton = $('button#message')
+
+  var status = [0, 0, 0]
+
+  var restoreState = function() {
+
+    status = [0, 0, 0]
+    linkButton.text("Link")
+    messageButton.removeAttr("disabled")
+  }
+
+  var sendEvent = function() {
+
+    if (status[0] == "link") {
+
+      console.log(status)
+      socket.emit("addlink", JSON.stringify({source: status[1], target:status[2]}))
+      status = ["link", status[2], 0]
+
+    } else if (status[0] == "message") {
+       socket.emit("message", JSON.stringify({from:status[1], to:status[2]}))
+       restoreState()
+    } else {
+      restoreState()
+    }
+  }
+  newnodeButton.click(function (){
+
+    restoreState()
+    socket.emit("addnode", "yo")
+  })
+
+  linkButton.click(function (){
+      
+    if (status[0] == "link") restoreState()
+    else {
+
+      status[0] = "link"
+      linkButton.text("Stop linking")
+    }
+  })
+
+  messageButton.click(function (){
+
+    restoreState()
+    status[0] = "message"
+    messageButton.attr("disabled", "disabled")
+  })
+
   socket.on('connect', function() {
     $('body').addClass('connected')
   })
@@ -38,7 +89,6 @@
       .attr("width", width)
       .attr("height", height)
       .on("mousemove", mousemove)
-      .on("mousedown", mousedown);
 
   svg.append("rect")
       .attr("width", width)
@@ -52,7 +102,7 @@
   var cursor = svg.append("circle")
       .attr("r", 30)
       .attr("transform", "translate(-100,-100)")
-      .attr("class", "cursor");
+      .attr("class", "cursor")
 
   restart();
 
@@ -104,9 +154,19 @@
     cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
   }
 
-  function mousedown() {
-    console.log("addnode")
-    socket.emit("addnode", "yo")
+  function nodeClick(e) {
+
+    if (status[0] != 0) {
+
+      if (status[1] == 0) {
+          status[1] = e.id
+
+      } else if (status[2] == 0) {
+
+          status[2] = e.id
+          sendEvent()
+      }
+    }
   }
 
   function tick() {
@@ -129,7 +189,8 @@
 
     node.enter().insert("circle", ".cursor")
         .attr("class", "node")
-        .attr("r", 5)
+        .attr("r", 10)
+        .on("mousedown", nodeClick)
         .call(force.drag);
 
     force.start();
