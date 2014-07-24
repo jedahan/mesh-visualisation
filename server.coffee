@@ -17,9 +17,9 @@ addRandomNode = (socket) ->
 
 io.sockets.on 'connection', (socket) ->
   socket.on 'addnode', (data) ->
-    console.log data
+    console.log "addnode: #{data}"
   socket.on 'addlink', (data) ->
-    console.log data
+    console.log "addlink: #{data}"
 
   connectedSockets.push socket
   for socket in connectedSockets
