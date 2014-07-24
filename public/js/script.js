@@ -66,7 +66,6 @@
 
     console.log("adding node "+id);
     nodes.push({x: 200, y: 50, id: id});
-    socket.send({id: id});
     restart();
     return node;
   }

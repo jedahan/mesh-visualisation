@@ -8,22 +8,20 @@ crypto = require 'crypto'
 # socket.io
 socketio = require 'socket.io'
 io = socketio.listen server
-connectedSockets = []
 
-addRandomNode = (socket) ->
-  ->
-    randomId = crypto.randomBytes(Math.ceil(16/2)).toString('hex').slice(0,16)
-    socket.emit 'addnode', JSON.stringify({id: randomId})
+printData = (data) ->
+  console.log "socket message: "
+  console.dir data
 
+# handle messages from cliens
 io.sockets.on 'connection', (socket) ->
-  socket.on 'addnode', (data) ->
-    console.log "addnode: #{data}"
-  socket.on 'addlink', (data) ->
-    console.log "addlink: #{data}"
+  socket.on 'addnode', printData
+  socket.on 'addlink', printData
 
-  connectedSockets.push socket
-  for socket in connectedSockets
-    setInterval addRandomNode(socket), 5000
+setInterval addRandomNode, 5000
+addRandomNode = ->
+  randomId = crypto.randomBytes(Math.ceil(16/2)).toString('hex').slice(0,16)
+  io.emit 'addnode', JSON.stringify({id: randomId})
 
 # cors proxy and body parser
 server.use restify.bodyParser()
