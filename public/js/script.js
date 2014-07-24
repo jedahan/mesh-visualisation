@@ -65,7 +65,9 @@
     }
 
     console.log("adding node "+id);
-    nodes.push({x: 200, y: 50, id: id});
+    var randomX = Math.floor(Math.random()*$('svg').width());
+    var randomY = Math.floor(Math.random()*$('svg').height());
+    nodes.push({x: randomX, y: randomY, id: id});
     restart();
     return node;
   }
@@ -103,23 +105,6 @@
   }
 
   function mousedown() {
-    /*var point = d3.mouse(this),
-        node = {x: point[0], y: point[1]},
-        n = nodes.push(node);
-
-    socket.emit('addnode', node);
-    // add links to any nearby nodes
-    nodes.forEach(function(target) {
-      var x = target.x - node.x,
-          y = target.y - node.y;
-      if (Math.sqrt(x * x + y * y) < 30) {
-        links.push({source: node, target: target});
-        socket.emit('addlink', {source: node, target: target});
-      }
-    });
-
-    restart();*/
-
     console.log("addnode")
     socket.emit("addnode", "yo")
   }
