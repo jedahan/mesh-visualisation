@@ -4,7 +4,12 @@ rect {
 }
 
 .node {
-  fill: #aaa;
+  fill: #eee;
+}
+
+.activenode {
+
+  fill: #0ff;
 }
 
 .cursor {
