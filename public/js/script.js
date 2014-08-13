@@ -65,12 +65,20 @@
 
   socket.on('addnode', function(json){
     var message = JSON.parse(json)
-    addnode(message.id)
+    addnode(message.id, message.address)
   })
 
   socket.on('addlink', function(json){
     var message = JSON.parse(json)
     addlink(message.source, message.target)
+  })
+
+  socket.on('message', function(json){
+
+    var message = JSON.parse(json)
+    console.log(message)
+    pulseNode(message.from, 'green')
+    pulseNode(message.to, 'orange')
   })
 
   var width = 960,
@@ -86,8 +94,8 @@
       .on("tick", tick);
 
   var svg = d3.select("body").append("svg")
-      .attr("width", width)
-      .attr("height", height)
+      .attr("viewBox", "0 0 " + width + " " + height)
+      .attr("preserveAspectRatio", "xMidYMid meet")
       .on("mousemove", mousemove)
 
   svg.append("rect")
@@ -106,7 +114,7 @@
 
   restart();
 
-  function addnode(id){
+  function addnode(id, addr){
     for(var i=0; i<nodes.length; i++){
       if(nodes[i].id===id){
         console.log("node "+id+" already exists, not adding");
@@ -117,7 +125,7 @@
     console.log("adding node "+id);
     var randomX = Math.floor(Math.random()*$('svg').width());
     var randomY = Math.floor(Math.random()*$('svg').height());
-    nodes.push({x: randomX, y: randomY, id: id});
+    nodes.push({x: randomX, y: randomY, id: id, address: addr});
     restart();
     return node;
   }
@@ -167,6 +175,25 @@
           sendEvent()
       }
     }
+
+    console.log("Id: "+e.id+" Address: "+e.address)
+  }
+
+  function pulseNode(id, color) {
+    var d3box = d3.select('[data-id="' + id + '"]');
+    d3box.transition(500)
+    .style('fill', color)
+    .transition().duration(10000)
+    .style('fill', '#eee');
+  }
+
+  function select(d) {
+    if (d3SelectedElement) {
+    d3SelectedElement.classed({'selected': false});
+    }
+    var d3box = d3.select('[data-id="' + d._id + '"]');
+    d3box.classed({'selected': true});
+    d3SelectedElement = d3box;
   }
 
   function tick() {
@@ -190,10 +217,13 @@
     node.enter().insert("circle", ".cursor")
         .attr("class", "node")
         .attr("r", 10)
+        .attr("data-id", keyFn)
         .on("mousedown", nodeClick)
         .call(force.drag);
 
     force.start();
   }
+
+  var keyFn = function(d){ return d.id; };
 
 })()
